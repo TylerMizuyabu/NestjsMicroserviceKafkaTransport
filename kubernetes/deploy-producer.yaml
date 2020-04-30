@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-producer
+  labels:
+    app: kafka-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-producer
+  template:
+    metadata:
+      labels:
+        app: kafka-producer
+    spec:
+      containers:
+        - name: kafka-producer
+          image: kafka-microservice
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Never
+          env:
+            - name: KAFKA_URL
+              value: "kafka:9092"
+            - name: CONSUMER_GROUP
+              value: "producer"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-producer-service
+spec:
+  ports:
+    - protocol: TCP
+      port: 3000
+  selector:
+    app: kafka-producer
+  type: NodePort
