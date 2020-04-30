@@ -1,6 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import { ClientKafka, MessagePattern } from '@nestjs/microservices';
+import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
+import { KafkaMessage } from '@nestjs/microservices/external/kafka-options.interface';
 
 @Controller()
 export class AppController {
@@ -12,8 +13,8 @@ export class AppController {
   }
 
   @MessagePattern('topic1')
-  sendWorld(): string {
-    return 'world';
+  sendWorld(@Payload() data: KafkaMessage): string {
+    return `${data.value} world!`;
   }
 
   async onModuleInit() {
